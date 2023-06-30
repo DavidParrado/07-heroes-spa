@@ -3,31 +3,46 @@ import ReactDOM from 'react-dom/client';
 
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import { HeroesApp } from './HeroesApp';
-import { MarvelPage, DcPage } from './heroes';
-import { LoginPage } from './auth';
+import { MarvelPage, DcPage, HeroesRoutes, SearchPage, HeroPage } from './heroes';
+import { AuthProvider, LoginPage } from './auth';
+import { PublicRoute } from './router/PublicRoute';
+import { PrivateRoute } from './router/PrivateRoute';
+
 import './styles.css';
-import { SearchPage, HeroPage } from './heroes';
 
 const router = createBrowserRouter([
   { 
     path: '*',
-    Component: HeroesApp,
+    Component: PrivateRoute,
     children: [
-      { path: '*', element: <Navigate to="/marvel" /> },
-      { path: 'marvel', Component: MarvelPage },
-      { path: 'dc', Component: DcPage },
-      { path: 'search', Component: SearchPage },
-      { path: 'hero/:id', Component: HeroPage },
+      {
+        path: '*',
+        Component: HeroesRoutes,
+        children: [
+          { path: '*', element: <Navigate to="/marvel" /> },
+          { path: 'marvel', Component: MarvelPage },
+          { path: 'dc', Component: DcPage },
+          { path: 'search', Component: SearchPage },
+          { path: 'hero/:id', Component: HeroPage },
+        ],
+      }
     ]
   },
-  { path: 'login', Component: LoginPage },
+  {
+    path: 'login/*',
+    Component: PublicRoute,
+    children: [
+      { path: '*', Component: LoginPage }
+    ]
+  },
 ])
 
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={ router } />
+    <AuthProvider>
+      <RouterProvider router={ router } />
+    </AuthProvider>
   </React.StrictMode>,
 )
