@@ -1,6 +1,9 @@
+import { HeroesRoutes } from '../heroes';
 
 export const AppRouter = () => {
-  return [
-    {}
-  ]
+  return (
+    <>
+      <HeroesRoutes />
+    </>
+  )
 }
